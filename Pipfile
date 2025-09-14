@@ -7,6 +7,9 @@ name = "pypi"
 django = "*"
 requests = "*"
 openai = "*"
+psycopg2 = "*"
+bcrypt = "*"
+python-decouple = "*"
 
 [dev-packages]
 

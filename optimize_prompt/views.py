@@ -19,7 +19,7 @@ async def optimize_prompt(request):
             request = await asyncio.to_thread(requests.post, url=config("BASE_URL"), 
                     headers={
                         "Authorization": f"Bearer {config("API_KEY")}",
-                        "Content-Type": "application/x-www-form-urlencoded"
+                        "Content-Type": "application/json"
                     },data=json.dumps({
                             "model": "nvidia/nemotron-nano-9b-v2:free",
                             "messages": [
@@ -59,7 +59,8 @@ async def optimize_prompt(request):
 
                 return JsonResponse({
 
-                    "Message" : "Error"
+                    "Status Code": request.status_code,
+                    "Message": request.text
                 }, status = 400)
 
         except Exception as e:

@@ -10,6 +10,7 @@ openai = "*"
 psycopg2 = "*"
 bcrypt = "*"
 python-decouple = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

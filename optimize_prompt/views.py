@@ -53,7 +53,9 @@ async def optimize_prompt(request):
 
                 clean_json = json.loads(result_raw)
 
-                return JsonResponse(clean_json, status = 200)
+                response = JsonResponse(clean_json, status = 200)
+
+                return response
             
             else:
 
@@ -61,7 +63,7 @@ async def optimize_prompt(request):
 
                     "Status Code": request.status_code,
                     "Message": request.text
-                }, status = 400)
+                }, status = int(request.status_code))
 
         except Exception as e:
 

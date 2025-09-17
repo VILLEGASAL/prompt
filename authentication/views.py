@@ -11,9 +11,6 @@ import bcrypt
 def sign_up(request):
     if request.method == "POST":
         
-        first_name = request.POST.get("first_name", None)
-        last_name = request.POST.get("last_name", None)
-        middle_name = request.POST.get("middle_name", None)
         username = request.POST.get("username", None)
         password = request.POST.get("password", None).encode("utf-8")
 
@@ -26,9 +23,9 @@ def sign_up(request):
 
             cursor = connection.cursor(cursor_factory = RealDictCursor)
 
-            query = "INSERT INTO users_tbl(first_name, last_name, middle_name, username, password) VALUES(%s, %s, %s, %s, %s)"
+            query = "INSERT INTO users_tbl(username, password) VALUES(%s, %s, %s, %s, %s)"
 
-            values = [first_name, last_name, middle_name, username, password_string]
+            values = [username, password_string]
 
             cursor.execute(query, values)
 
@@ -50,4 +47,63 @@ def sign_up(request):
 
             return response
 
+@csrf_exempt
+def login(request):
+    if request.method == "POST":
+
+        username = request.POST.get("username", None)
+        password = request.POST.get("password", None).encode("utf-8")
+
+        try:
+
+            connection = db_config.get_connection()
+
+            cursor = connection.cursor(cursor_factory = RealDictCursor)
+
+            query = "SELECT * FROM users_tbl WHERE username = %s"
+
+            values = [username]
+
+            cursor.execute(query, values)
+
+            connection.commit()
+
+            user = cursor.fetchone()
+
+            if user != None:
+                if bcrypt.checkpw(password, user.get("password").encode("utf-8")):
+
+                    response = JsonResponse({
+
+                        "message": "Welcome!"
+
+                    }, status = 200)
+
+                    return
+
+                else:
+
+                    response = JsonResponse({
+
+                        "message": "Pasword Incorect"
+                    }, status = 401)
+
+                    return response
+            else:
+                
+                response = JsonResponse({
+
+                    "message": f"No user with username {username}"
+                }, status = 401)
+
+                return response
+
+        except Exception as e:
+
+            response = JsonResponse({
+
+                "message": f"{e}"
+            }, status = 500)
+
+            return response
 

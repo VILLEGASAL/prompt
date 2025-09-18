@@ -4,6 +4,9 @@ from psycopg2.extras import RealDictCursor
 from django.views.decorators.csrf import csrf_exempt
 from db import db_config
 import bcrypt
+import uuid
+
+SESSION = {}
 
 
 # Create your views here.
@@ -73,13 +76,28 @@ def login(request):
             if user != None:
                 if bcrypt.checkpw(password, user.get("password").encode("utf-8")):
 
+                    SESSION_ID = str(uuid.uuid4())
+
+                    SESSION[SESSION_ID] = user
+
+                    print(SESSION)
+
                     response = JsonResponse({
 
                         "message": "Welcome!"
 
                     }, status = 200)
 
-                    return
+                    response.set_cookie(
+
+                        key="session_id",
+                        value=SESSION_ID,
+                        max_age=86400,
+                        httponly=True,
+                        secure=True
+                    )
+
+                    return response
 
                 else:
 

@@ -2,13 +2,34 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from decouple import config
+from authentication.views import SESSION
 import requests
 import json
 import asyncio
+from functools import wraps
 
+def check_session(func):
+    @wraps(func)
+    async def wrapper(request, *args, **kwargs):
+
+        cookie = request.COOKIES.get('session_id', None)
+        
+        if cookie in SESSION:
+
+            return await func(request, *args, **kwargs)
+        
+        else:
+            
+            return JsonResponse({
+
+                "message": "You need to login first"
+            }, status = 401)
+    
+    return wrapper
 
 # Create your views here.
 @csrf_exempt
+@check_session
 async def optimize_prompt(request):
     if request.method == 'POST':
 

@@ -67,6 +67,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
 ]
 
+# Session settings
+SESSION_COOKIE_SAMESITE = "None"   # Required if frontend/backend are on different domains
+SESSION_COOKIE_SECURE = True 
+
 ROOT_URLCONF = 'server.urls'
 
 TEMPLATES = [

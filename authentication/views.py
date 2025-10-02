@@ -109,7 +109,8 @@ def login(request):
                         value=SESSION_ID,
                         max_age=86400,
                         httponly=True,
-                        secure=True
+                        secure=True,
+                        samesite="None"
                     )
 
                     return response

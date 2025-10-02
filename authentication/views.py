@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from db import db_config
 import bcrypt
 import uuid
+import json
 
 SESSION = {}
 
@@ -13,9 +14,16 @@ SESSION = {}
 @csrf_exempt
 def sign_up(request):
     if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        username = data.get("username", None)
+        password = data.get("password", None)
+
+        if not username or not password:
+            return JsonResponse({"message": "Missing credentials"}, status = 401)
         
-        username = request.POST.get("username", None)
-        password = request.POST.get("password", None).encode("utf-8")
+        password = password.encode("utf-8")
 
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
 
@@ -26,7 +34,7 @@ def sign_up(request):
 
             cursor = connection.cursor(cursor_factory = RealDictCursor)
 
-            query = "INSERT INTO users_tbl(username, password) VALUES(%s, %s, %s, %s, %s)"
+            query = "INSERT INTO users_tbl(username, password) VALUES(%s, %s)"
 
             values = [username, password_string]
 
@@ -54,8 +62,17 @@ def sign_up(request):
 def login(request):
     if request.method == "POST":
 
-        username = request.POST.get("username", None)
-        password = request.POST.get("password", None).encode("utf-8")
+        data = json.loads(request.body)
+
+        username = data.get("username", None)
+        password = data.get("password", None)
+
+        if not username or not password:
+            return JsonResponse({"message": "Missing credentials."}, status = 401)
+
+        
+        password = password.encode("utf-8")
+
 
         try:
 
@@ -79,13 +96,11 @@ def login(request):
                     SESSION_ID = str(uuid.uuid4())
 
                     SESSION[SESSION_ID] = user
-
-                    print(SESSION)
-
+            
                     response = JsonResponse({
 
-                        "message": "Welcome!"
-
+                        "message": "Welcome!",
+                        "username": user["username"]
                     }, status = 200)
 
                     response.set_cookie(
@@ -125,3 +140,21 @@ def login(request):
 
             return response
 
+def check_session(request):
+
+    cookie = request.COOKIES.get('session_id', None)
+
+    if cookie in SESSION:
+
+        return JsonResponse({
+
+            "Message": "Authenticated"
+        }, status = 200)
+    
+    else:
+
+        return JsonResponse({
+
+            "Message": "Unauthenticated"
+        }, status = 401)
+    

@@ -1,7 +1,7 @@
 from psycopg2 import pool
 from decouple import config
 
-connection = pool.SimpleConnectionPool(1, 10, 
+connection = pool.SimpleConnectionPool(1, 30, 
                                        
     dbname = config("DB_NAME"),
     host = config("DB_HOST"),

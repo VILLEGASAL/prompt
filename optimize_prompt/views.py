@@ -33,7 +33,12 @@ def check_session(func):
 async def optimize_prompt(request):
     if request.method == 'POST':
 
-        user_prompt = request.POST.get("user_prompt", None)
+        data = json.loads(request.body)
+
+        user_prompt = data.get("user_prompt", None)
+
+        if not user_prompt or user_prompt == None:
+            return JsonResponse({"message": "Invalid prompt"}, status = 300)
 
         try:
 

@@ -60,12 +60,14 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",   
+    "https://opti-prompt.vercel.app",
     "https://opti-prompt.vercel.app/",          
 ]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    "https://opti-prompt.vercel.app"
     "https://opti-prompt.vercel.app/",
 ]
 

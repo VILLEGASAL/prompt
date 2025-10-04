@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-i6&b^d%2^8z!qx(-4w1=sx4ytll2^u^ttw%$@k+fe+s(+&g9jz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "prompt-jbjr.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "prompt-jbjr.onrender.com", "opti-prompt.vercel.app"]
 
 
 # Application definition
@@ -59,12 +59,14 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",             
+    "http://localhost:5173",   
+    "https://opti-prompt.vercel.app/",          
 ]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    "https://opti-prompt.vercel.app/",
 ]
 
 # Session settings

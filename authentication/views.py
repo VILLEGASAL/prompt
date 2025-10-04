@@ -140,6 +140,25 @@ def login(request):
             }, status = 500)
 
             return response
+        
+@csrf_exempt
+def logout(request):
+    if(request.method == "DELETE"):
+
+        session_id = request.COOKIES.get('session_id', None)
+
+        SESSION.pop(session_id, None)
+        
+        return JsonResponse({
+
+            "message": "Logged out successfully"
+        }, status = 200)
+    else:
+
+        return JsonResponse({
+
+            "message": "Route not Found!"
+        }, status = 404)
 
 def check_session(request):
 
